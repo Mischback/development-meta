@@ -10,7 +10,7 @@ on:
 
 jobs:
   dependabot:
-    uses: mischback/development-meta/.github/workflows/dependabot-auto-approve.yml@main
+    uses: mischback/development-meta/.github/workflows/dependabot-auto-approve.yml@development
     with:
       pr_url: ${{ github.event.pull_request.html_url }}
     secrets:
