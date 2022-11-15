@@ -1,0 +1,37 @@
+# Provide this workflow in a dedicated, central repository
+name: Dependabot (auto-approve)
+
+on:
+  workflow_call:
+    inputs:
+      pr_url:
+        description: "The PR URL, as passed from the caller workflow (required)"
+        required: true
+        type: string
+    secrets:
+      token:
+        description: "The GITHUB_TOKEN from the caller workflow (required)"
+        required: true
+
+jobs:
+  auto-approve:
+    name: Dependabot (auto-approve)
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+
+    # Dependabot PRs of minor/patch versions should be auto-approved. This requires
+    # the permission to modify the PR from this workflow.
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Metadata of PR
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.3.4
+        with:
+          github-token: ${{ secrets.token }}
+      - name: Automatically approve minor and patch updates
+        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          GITHUB_TOKEN: ${{ secrets.token }}
