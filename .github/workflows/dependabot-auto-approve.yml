@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Fetch Metadata of PR
         id: metadata
-        uses: dependabot/fetch-metadata@v1.4.0
+        uses: dependabot/fetch-metadata@v1.5.1
         with:
           github-token: ${{ secrets.token }}
       - name: Automatically approve minor and patch updates
